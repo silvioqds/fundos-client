@@ -1,0 +1,70 @@
+﻿@{
+    @model List<Fundo>
+    ViewData["Title"] = "Home Page";
+}
+@if (TempData["Mensagem"] != null)
+{
+    <div id="mensagem" class="alert alert-warning">
+        @TempData["Mensagem"]
+    </div>
+}
+
+<div class="breadcrumb-holder container-fluid">
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href="">Fundos</a></li>   
+        <li class="breadcrumb-item active float-right"><a asp-action="Create">Novo Patrimonio</a></li>
+    </ul>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="col-12">
+            @if (Model != null)
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Codigo</th>
+                            <th>Nome</th>
+                            <th>CNPJ</th>
+                            <th>Tipo de Fundo</th>
+                            <th>Patrimonio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Codigo</td>
+                                <td>@item.Nome</td>
+                                <td>@item.Cnpj</td>
+                                <td>@item.TipoFundo</td>
+                                <td>@item.Patrimonio</td>
+                                <td>
+                                    @Html.ActionLink("Editar", "Edit", new { codigo = item.Codigo })
+                                    @Html.ActionLink("Excluir", "Delete", new { codigo = item.Codigo })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h4>Nenhum registro encontrado.</h4>
+            }
+        </div>
+    </div>
+</div>
+<script>
+  
+    $(document).ready(function () {
+        
+        if ($('#mensagem').length > 0) {
+            setTimeout(function () {
+                $('#mensagem').fadeOut('slow', function () {
+                    $(this).remove();
+                });
+            }, 5000);
+        }
+    });
+</script>

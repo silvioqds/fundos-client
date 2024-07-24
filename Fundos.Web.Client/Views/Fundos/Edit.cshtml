@@ -1,0 +1,113 @@
+﻿@model Fundos.Web.Client.Models.Fundo
+
+@{
+    ViewData["Title"] = "Editar Fundo";
+}
+
+@if (TempData["Mensagem"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["Mensagem"]
+    </div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Editar Fundo</h4>
+        <form asp-action="Edit" method="post">
+            <div class="form-group">
+                <label asp-for="Codigo" class="control-label">Código</label>
+                <input asp-for="Codigo" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="Nome" class="control-label">Nome</label>
+                <input asp-for="Nome" class="form-control" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cnpj" class="control-label">CNPJ</label>
+                <input asp-for="Cnpj" class="form-control" />
+                <span asp-validation-for="Cnpj" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Codigo_Tipo" class="control-label">Tipo de Fundo</label>
+                <select asp-for="Codigo_Tipo" asp-items="@ViewBag.TiposFundo" class="form-control"></select>
+                <span asp-validation-for="Codigo_Tipo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Patrimonio" class="control-label">Patrimônio</label>
+                <input asp-for="Patrimonio" class="form-control" readonly />
+                <span asp-validation-for="Patrimonio" class="text-danger"></span>
+                 <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#modalAlterarPatrimonio">
+                    Alterar Patrimônio
+                </button>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+
+<!-- Modal Alterar Patrimônio -->
+<div class="modal fade" id="modalAlterarPatrimonio" tabindex="-1" role="dialog" aria-labelledby="modalAlterarPatrimonioLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAlterarPatrimonioLabel">Alterar Patrimônio</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="formAlterarPatrimonio">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="valor">Valor</label>
+                        <input type="number" class="form-control" id="valor" name="valor" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="acao">Ação</label>
+                        <select class="form-control" id="acao" name="acao" required>
+                            <option value="">Selecione...</option>
+                            <option value="0">Investir</option>
+                            <option value="1">Retirar</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnSalvarAlteracao">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <script>
+    $(document).ready(function () {
+        $('#btnSalvarAlteracao').click(function () {
+            // Aqui você pode implementar a lógica para processar a alteração de patrimônio via AJAX, por exemplo
+            var valor = $('#valor').val();
+            var acao = $('#acao').val();
+
+            // Exemplo de AJAX para enviar os dados para o servidor
+            $.ajax({
+                url: '@Url.Action("AlterarPatrimonio", "Fundos")',
+                method: 'POST',
+                data: {
+                    codigo: '@Model.Codigo',
+                    valor: valor,
+                    acao: acao
+                },
+                success: function (response) {        
+                    console.log(response)
+                    $('#Patrimonio').val(response);
+                    $('#modalAlterarPatrimonio').modal('hide');
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);                  
+                }
+            });
+        });
+    });
+</script>
